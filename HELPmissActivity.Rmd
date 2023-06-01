@@ -35,6 +35,17 @@ data("HELPmiss", package = "mosaicData")
 
 *Write several sentences (or a bullet list) describing the HELP Study and the resulting `HELPmiss` data.  Your description should investigate basic data provenance (e.g., Who, What, When, Where, Why, How), explain the setting for the data, specify what each case represents in the data, and remark on inclusion/exclusion criteria.* 
 
+- (Who) This data set was a clinical trial from a detoxification unit with the goal of primary medical care. With a total of 470 patients who are adults, Spanish or English, reported alcohol, heroin, or cocaine as their first or second drug of choice, and resided near a primary care clinic.
+
+- (What) The data was consisted of their status, substance use, drug abuse, detox programs, gender, alcohol usage, social situation, race/ethnicity, primary substance of abuse (if any then alcohol, cocaine, or heroin).
+
+- (when) 6 months for 2 years and met at 5 timepoints.
+
+- (Where) I'm pretty sure it is near the Boston area because if the subject/patient leaves the Boston area they would be excluded from the test.
+
+- (Why) Since it was a detox study it was to see if there were possiblities that the patient (subject) has the risk of retaking the same drug/substance and what their current substance of abuse is.
+
+- (How) The patients (subjects) were interviewed during their detox stay and follow-up interviews were taken every 6 months for 2 years. It was continuous, count, discrete, and survival time predictors and outcomes were collected at each of these five occasions.
 
 - investigate by searching R help documentation
 - there's a research paper cited where additional detail is provided
@@ -45,10 +56,14 @@ data("HELPmiss", package = "mosaicData")
 
 *Produce one or more R expressions involving `summarize()` and `HELPmiss` to address each of the following prompts.*
 
+?summarise
+
 1. number of people (cases) in `HELPmiss` study
 
 ```{r}
 #Your code here 
+HELPmiss %>%
+  summarise( cases = n() )
 
 ```
 
@@ -56,7 +71,8 @@ data("HELPmiss", package = "mosaicData")
 
 ```{r}
 #Your code here 
-
+HELPmiss %>%
+  summarise( total_e2b = sum( e2b, na.rm = TRUE ) )
 ```
 
 
@@ -65,14 +81,15 @@ data("HELPmiss", package = "mosaicData")
 
 ```{r}
 #Your code here 
-
+HELPmiss %>%
+  summarise( mean_time_post_detox = mean( daysanysub, na.rm = TRUE ) )
 ```
 
 
 
 ## Task 3: Group Summaries  
 
-*Repeat task 2 above, but add code chunks to calculate result group-by-group according to each prompt (i.e. each promt should have three statements for each of the three prompts in task 2).  Be sure to show all R code and write a sentence or two about what you observe in the results. Remember, you can add multiple statistics inside `summary`.* 
+*Repeat task 2 above, but add code chunks to calculate result group-by-group according to each prompt (i.e. each prompt should have three statements for each of the three prompts in task 2).  Be sure to show all R code and write a sentence or two about what you observe in the results. Remember, you can add multiple statistics inside `summary`.* 
 
 
 - males versus females
@@ -82,34 +99,60 @@ data("HELPmiss", package = "mosaicData")
 - homeless versus housed broken down by substance
 
 ### males versus females
+The table below has the amount of males/females then has e2b (detox stays for the last 6 months) by sex, and the mean time for staying post detox.
 ```{r}
 #Your code here
-
+HELPmiss %>%
+  group_by( sex ) %>%
+  summarise( cases = n(),
+             total_e2b = sum( e2b, na.rm = TRUE ),
+             mean_time_post_detox = mean( daysanysub, na.rm = TRUE ))
+  
 ```
 
 ### homeless or not
+Displayed housed/homeless then the amount of said display and then the total e2b (detox stays for the last 6 months) by homeless, and the mean of the post detox.
 ```{r}
 #Your code here
-
+HELPmiss %>%
+  group_by( homeless ) %>%
+  summarise( cases = n(),
+             total_e2b = sum( e2b, na.rm = TRUE ),
+             mean_time_post_detox = mean( daysanysub, na.rm = TRUE ))
 ```
 
 
 ### substance
+Displayed substance then the amount of said substance (includes missing) and then the total e2b (detox stays for the last 6 months) by substance (abuse), and the mean of the post detox.
 ```{r}
 #Your code here
-
+HELPmiss %>%
+  group_by( substance ) %>%
+  summarise( cases = n(),
+             total_e2b = sum( e2b, na.rm = TRUE ),
+             mean_time_post_detox = mean( daysanysub, na.rm = TRUE ))
 ```
 
 ### homeless versus housed broken down by sex
+Displayed homeless and sex then the amount of said substance and homeless (includes missing) and then the total e2b (detox stays for the last 6 months), and the mean of the post detox of variables.
 ```{r}
 #Your code here
-
+HELPmiss %>%
+  group_by( homeless, sex ) %>%
+  summarise( cases = n(),
+             total_e2b = sum( e2b, na.rm = TRUE ),
+             mean_time_post_detox = mean( daysanysub, na.rm = TRUE ))
 ```
 
 ### homeless versus housed broken down by substance
+Displayed homeless and substance then the amount of said substance and homeless (includes missing) and then the total e2b (detox stays for the last 6 months), and the mean of the post detox of variables.
 ```{r}
 #Your code here
-
+HELPmiss %>%
+  group_by( homeless, substance ) %>%
+  summarise( cases = n(),
+             total_e2b = sum( e2b, na.rm = TRUE ),
+             mean_time_post_detox = mean( daysanysub, na.rm = TRUE ))
 ```
 
 
@@ -120,10 +163,13 @@ data("HELPmiss", package = "mosaicData")
 
 *Remember, you can use* `esquisser` *or* `mplot` *in your console. But only include the ggplot code in this Rmd document.*
 
-
+I used x as my substance, y as my female, and grouped by average drinks because I wanted to know the reaction of substance versus female is by how much they usually drink who went to the detox clinics for study.
 ```{r}
 # Your Code here.
-
+ggplot(HELPmiss) +
+  aes(x = substance, y = female, group = avg_drinks) +
+  geom_col(fill = "#112446") +
+  theme_minimal()
 ```
 
 
